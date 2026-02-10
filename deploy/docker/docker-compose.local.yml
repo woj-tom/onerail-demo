@@ -1,0 +1,14 @@
+name: one-rail
+services:
+
+  inventory-db:
+    image: postgres:17.7
+    container_name: inventory-db
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_PASSWORD: postgres
+    ports:
+        - "6100:5432"
