@@ -1,15 +1,15 @@
-using InventoryService.Infrastructure.Database.Entities;
+using InventoryService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryService.Infrastructure.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Inventory> Inventories => Set<Inventory>();
+    public DbSet<InventoryEntry> Inventories => Set<InventoryEntry>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Inventory>(entity =>
+        builder.Entity<InventoryEntry>(entity =>
         {
             entity.ToTable("inventory");
 

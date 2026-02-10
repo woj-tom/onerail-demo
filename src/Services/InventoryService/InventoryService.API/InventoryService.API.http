@@ -1,6 +1,8 @@
-@InventoryService.API_HostAddress = http://localhost:5114
+@InventoryService.API_HostAddress = http://localhost:6500
 
-GET {{InventoryService.API_HostAddress}}/weatherforecast/
-Accept: application/json
+POST http://localhost:6500/inventory/
+Content-Type: application/json
+
+{ "ProductId" : "A3C682CC-2363-45D2-B455-B80C31E52CF5", "Quantity": 5 }
 
 ###
