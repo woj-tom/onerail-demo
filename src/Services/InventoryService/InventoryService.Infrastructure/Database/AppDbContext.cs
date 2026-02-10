@@ -7,9 +7,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Inventory> Inventories => Set<Inventory>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<Inventory>(entity =>
+        builder.Entity<Inventory>(entity =>
         {
             entity.ToTable("inventory");
 

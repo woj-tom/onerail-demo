@@ -13,3 +13,16 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
         - "6100:5432"
+
+  product-db:
+    image: postgres:17.7
+    container_name: product-db
+    restart: always
+    # Reference: https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_PASSWORD: postgres
+    ports:
+        - "6200:5432"
