@@ -43,6 +43,12 @@ CodeCoverage/
 
 # MSBuild Binary and Structured Log
 *.binlog
+# Todo: figure out why [Bb]in/ and [Oo]bj/ are not enough
+*.dll
+*.exe
+*.exe.config
+*.MSBuild.BuildHost.deps.json
+*.MSBuild.BuildHost.runtimeconfig.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

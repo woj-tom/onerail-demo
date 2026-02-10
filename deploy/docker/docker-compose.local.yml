@@ -5,6 +5,7 @@ services:
     image: postgres:17.7
     container_name: inventory-db
     restart: always
+    # Reference: https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose
     # set shared memory limit when using docker compose
     shm_size: 128mb
     environment:
