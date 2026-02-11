@@ -1,6 +1,6 @@
-@InventoryService.API_HostAddress = http://localhost:6500
+@HostAddress = http://localhost:6500
 
-POST http://localhost:6500/inventory/
+POST {{HostAddress}}/inventory/
 Content-Type: application/json
 
 { "ProductId" : "A3C682CC-2363-45D2-B455-B80C31E52CF5", "Quantity": 5 }

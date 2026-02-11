@@ -49,6 +49,7 @@ CodeCoverage/
 *.exe.config
 *.MSBuild.BuildHost.deps.json
 *.MSBuild.BuildHost.runtimeconfig.json
+*.sln.DotSettings.user
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

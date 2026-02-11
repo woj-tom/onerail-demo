@@ -11,6 +11,7 @@ public class InventoryController(InventoryCreateHandler handler) : ControllerBas
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] InventoryCreateReq request, CancellationToken ct)
     {
+        // ToDo: Add validation
         await handler.Handle(new InventoryCreateCommand(
             request.ProductId, 
             request.Quantity,
