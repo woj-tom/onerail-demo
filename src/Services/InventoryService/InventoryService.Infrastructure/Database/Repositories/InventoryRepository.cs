@@ -10,4 +10,5 @@ public class InventoryRepository(AppDbContext db) : IInventoryRepository
         db.Inventories.Add(entry);
         await db.SaveChangesAsync(ct);
     }
+
 }

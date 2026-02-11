@@ -12,7 +12,7 @@ public class InventoryController(InventoryCreateHandler handler) : ControllerBas
     public async Task<IActionResult> Create([FromBody] InventoryCreateReq request, CancellationToken ct)
     {
         // ToDo: Add validation
-        await handler.Handle(new InventoryCreateCommand(
+        await handler.HandleAsync(new InventoryCreateCommand(
             request.ProductId, 
             request.Quantity,
             string.Empty), ct); // ToDo: Fix AddedBy after adding JWT auth

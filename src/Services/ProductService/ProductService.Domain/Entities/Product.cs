@@ -6,7 +6,7 @@ public class Product
     public string Name { get; }
     public string Description { get; }
     public decimal Price { get; }
-    public int Amount { get; }
+    public int Amount { get; private set; }
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; } = DateTime.UtcNow;
 
@@ -21,5 +21,10 @@ public class Product
         Name = name;
         Description = description;
         Price = price;
+    }
+    
+    public void IncreaseStock(int amount)
+    {
+        Amount += amount;
     }
 }

@@ -3,6 +3,7 @@ using ProductService.Application.Handlers;
 using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Database;
 using ProductService.Infrastructure.Database.Repositories;
+using ProductService.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<ProductCreateHandler>();
 builder.Services.AddScoped<ProductListHandler>();
-
+builder.Services.AddScoped<ProductInventoryAddedHandler>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddMessaging(builder.Configuration);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(

@@ -12,7 +12,7 @@ services:
       POSTGRES_DB: inventory_db
       POSTGRES_PASSWORD: postgres
     ports:
-        - "6100:5432"
+      - "6100:5432"
 
   product-db:
     image: postgres:17.7
@@ -25,4 +25,11 @@ services:
       POSTGRES_DB: product_db
       POSTGRES_PASSWORD: postgres
     ports:
-        - "6200:5432"
+      - "6200:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports: 
+      - "5672:5672" 
+      - "15672:15672"

@@ -2,6 +2,7 @@ using InventoryService.Application.Handlers;
 using InventoryService.Domain.Repositories;
 using InventoryService.Infrastructure.Database;
 using InventoryService.Infrastructure.Database.Repositories;
+using InventoryService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<InventoryCreateHandler>();
-
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+
+builder.Services.AddMessaging(builder.Configuration);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
