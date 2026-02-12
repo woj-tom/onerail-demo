@@ -1,6 +1,5 @@
 using InventoryService.Infrastructure.Consumers;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shared.Utils;
