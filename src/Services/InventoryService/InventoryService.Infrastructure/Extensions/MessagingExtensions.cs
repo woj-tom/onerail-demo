@@ -1,3 +1,4 @@
+using InventoryService.Infrastructure.Consumers;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,9 @@ public static class MessagingExtensions
         // Ref: https://masstransit.io/documentation/configuration/transports/rabbitmq#minimal-example
         services.AddMassTransit(x =>
         {
+            // Ref: https://masstransit.io/documentation/configuration/consumers
+            x.AddConsumer<ProductAddedConsumer>();
+            
             x.UsingRabbitMq((context, cfg) =>
             {
                 // ToDo: Move magic strings into a configuration file
@@ -21,6 +25,8 @@ public static class MessagingExtensions
                     h.Username("guest");
                     h.Password("guest");
                 });
+                
+                cfg.ConfigureEndpoints(context);
             });
         });
         

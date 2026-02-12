@@ -5,13 +5,14 @@ namespace InventoryService.Infrastructure.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<InventoryEntry> Inventories => Set<InventoryEntry>();
+    public DbSet<InventoryEntry> InventoryEntries => Set<InventoryEntry>();
+    public DbSet<RegisteredProduct> RegisteredProducts => Set<RegisteredProduct>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<InventoryEntry>(entity =>
         {
-            entity.ToTable("inventory");
+            entity.ToTable("inventory_entry");
 
             entity.HasKey(e => e.Id);
 
@@ -37,6 +38,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .IsRequired();
 
             entity.HasIndex(e => e.ProductId);
+        });
+
+        builder.Entity<RegisteredProduct>(entity =>
+        {
+            entity.ToTable("registered_product");
+            
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .HasColumnName("id");
+            
+            entity.Property(e => e.Name)
+                .HasColumnName("name")
+                .IsRequired();
+            
+            entity.Property(e => e.AddedAt)
+                .HasColumnName("added_at")
+                .HasDefaultValueSql("NOW()")
+                .IsRequired();
         });
     }
 }

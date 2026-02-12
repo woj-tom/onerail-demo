@@ -5,15 +5,16 @@ using ProductService.Infrastructure.Consumers;
 
 namespace ProductService.Infrastructure.Extensions;
 
-
 public static class MessagingExtensions
 {
     public static IServiceCollection AddMessaging(
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        // Ref: https://masstransit.io/documentation/configuration/transports/rabbitmq#minimal-example
         services.AddMassTransit(x =>
         {
+            // Ref: https://masstransit.io/documentation/configuration/consumers
             x.AddConsumer<ProductInventoryAddedConsumer>();
 
             // ToDo: Move magic strings into a configuration file

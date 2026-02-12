@@ -7,7 +7,7 @@ public class InventoryRepository(AppDbContext db) : IInventoryRepository
 {
     public async Task InsertAsync(InventoryEntry entry, CancellationToken ct)
     {
-        db.Inventories.Add(entry);
+        db.InventoryEntries.Add(entry);
         await db.SaveChangesAsync(ct);
     }
 

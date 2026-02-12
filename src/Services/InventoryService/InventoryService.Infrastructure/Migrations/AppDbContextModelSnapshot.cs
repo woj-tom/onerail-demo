@@ -22,7 +22,7 @@ namespace InventoryService.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("InventoryService.Infrastructure.Database.Entities.Inventory", b =>
+            modelBuilder.Entity("InventoryService.Domain.Entities.InventoryEntry", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,30 @@ namespace InventoryService.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("inventory", (string)null);
+                    b.ToTable("inventory_entry", (string)null);
+                });
+
+            modelBuilder.Entity("InventoryService.Domain.Entities.RegisteredProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("AddedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("added_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("registered_product", (string)null);
                 });
 #pragma warning restore 612, 618
         }

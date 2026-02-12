@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InventoryService.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInventoryTable : Migration
+    public partial class CreateInventoryAndProductTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "inventory",
+                name: "inventory_entry",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -23,12 +23,25 @@ namespace InventoryService.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_inventory", x => x.id);
+                    table.PrimaryKey("PK_inventory_entry", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "registered_product",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    added_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_registered_product", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_inventory_product_id",
-                table: "inventory",
+                name: "IX_inventory_entry_product_id",
+                table: "inventory_entry",
                 column: "product_id");
         }
 
@@ -36,7 +49,10 @@ namespace InventoryService.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "inventory");
+                name: "inventory_entry");
+
+            migrationBuilder.DropTable(
+                name: "registered_product");
         }
     }
 }

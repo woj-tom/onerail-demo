@@ -11,4 +11,8 @@
       <ProjectReference Include="..\ProductService.Domain\ProductService.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MassTransit" Version="9.1.0-develop.57" />
+    </ItemGroup>
+
 </Project>
