@@ -11,6 +11,12 @@ Run environment for a local development
 docker compose -f ./deploy/docker/docker-compose.local.yml up -d --build
 ```
 
+Run a whole environment to test communication
+
+```bash
+docker compose -f ./deploy/docker/docker-compose.yml up -d --build
+```
+
 ## Building images
 
 ### Build Inventory Service

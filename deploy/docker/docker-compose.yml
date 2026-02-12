@@ -1,0 +1,98 @@
+name: one-rail-full
+services:
+
+  product-service:
+    build:
+      context: ../..
+      dockerfile: src/Services/ProductService/ProductService.API/Dockerfile
+    image: one-rail/product-service
+    environment:
+      # This one is needed for db schema to be automatically deployed
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Postgres: Host=product-db;Port=5432;Database=product_db;Username=postgres;Password=postgres
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: "5672"
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__VirtualHost: /
+    depends_on:
+      product-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "6600:80"
+
+  inventory-service:
+    build:
+      context: ../..
+      dockerfile: src/Services/InventoryService/InventoryService.API/Dockerfile
+    image: one-rail/inventory-service
+    environment:
+      # This one is needed for db schema to be automatically deployed
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Postgres: Host=inventory-db;Port=5432;Database=inventory_db;Username=postgres;Password=postgres
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: "5672"
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__VirtualHost: /
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "6500:80"
+
+  product-db:
+    image: postgres:17.7
+    container_name: product-db
+    restart: always
+    # Reference: https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "6200:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  inventory-db:
+    image: postgres:17.7
+    container_name: inventory-db
+    restart: always
+    # Reference: https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "6100:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports: 
+      - "5672:5672" 
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
