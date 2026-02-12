@@ -1,15 +1,15 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using ProductService.Infrastructure.Consumers;
+using Shared.Utils;
 
 namespace ProductService.Infrastructure.Extensions;
 
 public static class MessagingExtensions
 {
-    public static IServiceCollection AddMessaging(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddMessaging(this IServiceCollection services)
     {
         // Ref: https://masstransit.io/documentation/configuration/transports/rabbitmq#minimal-example
         services.AddMassTransit(x =>
@@ -17,13 +17,16 @@ public static class MessagingExtensions
             // Ref: https://masstransit.io/documentation/configuration/consumers
             x.AddConsumer<ProductInventoryAddedConsumer>();
 
-            // ToDo: Move magic strings into a configuration file
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("localhost", "/", h =>
+                var options = context
+                    .GetRequiredService<IOptions<RabbitMqOptions>>()
+                    .Value;
+                
+                cfg.Host(options.Host, options.Port, options.VirtualHost, h =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
+                    h.Username(options.Username);
+                    h.Password(options.Password);
                 });
 
                 cfg.ConfigureEndpoints(context);

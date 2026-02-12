@@ -12,6 +12,7 @@ COPY ["src/Services/ProductService/ProductService.Infrastructure/ProductService.
 COPY ["src/Services/ProductService/ProductService.Domain/ProductService.Domain.csproj", "Services/ProductService/ProductService.Domain/"]
 COPY ["src/Services/ProductService/ProductService.Application/ProductService.Application.csproj", "Services/ProductService/ProductService.Application/"]
 COPY ["src/Shared/Shared.Contracts/Shared.Contracts.csproj", "Shared/Shared.Contracts/"]
+COPY ["src/Shared/Shared.Utils/Shared.Utils.csproj", "Shared/Shared.Utils/"]
 
 RUN dotnet restore "Services/ProductService/ProductService.API/ProductService.API.csproj"
 COPY ["src/", "."]
@@ -25,4 +26,5 @@ RUN dotnet publish "./ProductService.API.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "ProductService.API.dll"]

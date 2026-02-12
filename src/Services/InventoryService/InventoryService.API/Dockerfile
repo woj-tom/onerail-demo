@@ -12,6 +12,8 @@ COPY ["src/Services/InventoryService/InventoryService.Infrastructure/InventorySe
 COPY ["src/Services/InventoryService/InventoryService.Domain/InventoryService.Domain.csproj", "Services/InventoryService/InventoryService.Domain/"]
 COPY ["src/Services/InventoryService/InventoryService.Application/InventoryService.Application.csproj", "Services/InventoryService/InventoryService.Application/"]
 COPY ["src/Shared/Shared.Contracts/Shared.Contracts.csproj", "Shared/Shared.Contracts/"]
+COPY ["src/Shared/Shared.Utils/Shared.Utils.csproj", "Shared/Shared.Utils/"]
+
 RUN dotnet restore "Services/InventoryService/InventoryService.API/InventoryService.API.csproj"
 COPY ["src/", "."]
 WORKDIR "/src/Services/InventoryService/InventoryService.API/"
@@ -24,4 +26,5 @@ RUN dotnet publish "./InventoryService.API.csproj" -c $BUILD_CONFIGURATION -o /a
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "InventoryService.API.dll"]

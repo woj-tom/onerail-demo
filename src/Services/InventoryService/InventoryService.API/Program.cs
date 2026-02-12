@@ -4,8 +4,12 @@ using InventoryService.Infrastructure.Database;
 using InventoryService.Infrastructure.Database.Repositories;
 using InventoryService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<RabbitMqOptions>(
+    builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddControllers();
 
@@ -14,7 +18,7 @@ builder.Services.AddScoped<ProductAddedHandler>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddMessaging();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(

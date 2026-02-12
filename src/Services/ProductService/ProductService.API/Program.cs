@@ -4,8 +4,12 @@ using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Database;
 using ProductService.Infrastructure.Database.Repositories;
 using ProductService.Infrastructure.Extensions;
+using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<RabbitMqOptions>(
+    builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddControllers();
 
@@ -14,7 +18,7 @@ builder.Services.AddScoped<ProductListHandler>();
 builder.Services.AddScoped<ProductInventoryAddedHandler>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddMessaging();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
