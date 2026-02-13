@@ -4,6 +4,7 @@ using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Database;
 using ProductService.Infrastructure.Database.Repositories;
 using ProductService.Infrastructure.Extensions;
+using Shared.Contracts.Repositories;
 using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddScoped<ProductCreateHandler>();
 builder.Services.AddScoped<ProductListHandler>();
 builder.Services.AddScoped<ProductInventoryAddedHandler>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
 
 builder.Services.AddMessaging();
 

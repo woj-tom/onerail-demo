@@ -4,6 +4,7 @@ using InventoryService.Infrastructure.Database;
 using InventoryService.Infrastructure.Database.Repositories;
 using InventoryService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Shared.Contracts.Repositories;
 using Shared.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddScoped<InventoryCreateHandler>();
 builder.Services.AddScoped<ProductAddedHandler>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
 
 builder.Services.AddMessaging();
 
