@@ -1,33 +1,30 @@
-﻿using System.Net;
-using System.Net.Http.Json;
-using InventoryService.Domain.Entities;
-using InventoryService.Infrastructure.Database;
-using MassTransit;
+﻿using MassTransit;
 using MassTransit.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductService.Domain.Entities;
+using ProductService.Infrastructure.Database;
 using Shared.Contracts;
 using Testcontainers.PostgreSql;
 
-namespace Tests.InventoryService.Integration;
+namespace Tests.ProductService.Integration;
 
 [TestClass]
-public sealed class InventoryIntegrationTests
+public sealed class ProductIntegrationTests
 {
     private static PostgreSqlContainer _postgres;
 
     // Ref: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0&pivots=mstest
     private WebApplicationFactory<Program> _factory;
-    private HttpClient _client;
     
 
     [ClassInitialize]
     public static async Task InitializeAsync(TestContext context)
     {
         _postgres = new PostgreSqlBuilder("postgres:17.7")
-            .WithDatabase("inventory_db")
+            .WithDatabase("product_db")
             .WithUsername("postgres")
             .WithPassword("postgres")
             .Build();
@@ -59,38 +56,43 @@ public sealed class InventoryIntegrationTests
              
                 builder.UseEnvironment("Development");
             });
-        
-        _client = _factory.CreateClient();
     }
-    
+
     [TestMethod]
-    //                Who?             What?                    When?
-    public async Task InventoryService_WhenCallingPOSTInventory_ShouldSendEvent()
+    //                Who?           When?                       What?
+    public async Task ProductService_WhenReceivedDuplicatedEvent_ShouldBeIdempotent()
     {
         // Arrange
-        var productId = Guid.NewGuid();
-
-        await using var scope = _factory.Services.CreateAsyncScope();
+        var product = new Product("Product A", "...", 20.0m);
         
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.RegisteredProducts.Add(new RegisteredProduct(productId, "Product name"));
-            await db.SaveChangesAsync();
-        }
-
-        var harness = _factory.Services.GetTestHarness();
+        await using var scope = _factory.Services.CreateAsyncScope();
+        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
         await harness.Start();
 
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Products.AddAsync(product);
+        await db.SaveChangesAsync();
+        
+        var @event = new ProductInventoryAddedEvent(
+            Guid.NewGuid(),
+            product.Id,
+            10,
+            DateTime.UtcNow);
+
         // Act
-        var response = await _client.PostAsJsonAsync("/inventory", new
-        {
-            ProductId = productId,
-            Quantity = 10
-        });
+        await harness.Bus.Publish(@event);
+        await harness.Bus.Publish(@event);
+        await harness.Bus.Publish(@event);
         
         // Assert
-        Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-        Assert.IsTrue(await harness.Published.Any<ProductInventoryAddedEvent>());
+        Assert.IsTrue(await harness.Consumed.Any<ProductInventoryAddedEvent>());
+        Assert.IsTrue(await harness.Consumed.Any<ProductInventoryAddedEvent>());
+        Assert.IsTrue(await harness.Consumed.Any<ProductInventoryAddedEvent>());
+        
+        db.ChangeTracker.Clear();
+        product = await db.Products.FindAsync(product.Id);
+        Assert.IsNotNull(product);
+        Assert.AreEqual(10, product.Amount);
     }
 
     [TestCleanup]
