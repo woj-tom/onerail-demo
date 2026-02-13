@@ -78,6 +78,35 @@ namespace InventoryService.Infrastructure.Migrations
 
                     b.ToTable("registered_product", (string)null);
                 });
+
+            modelBuilder.Entity("Shared.Contracts.Models.ProcessedMessage", b =>
+                {
+                    b.Property<Guid>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.Property<string>("MessageType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message_type");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<DateTime>("ProcessedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.HasKey("MessageId");
+
+                    b.ToTable("processed_message", (string)null);
+                });
 #pragma warning restore 612, 618
         }
     }
