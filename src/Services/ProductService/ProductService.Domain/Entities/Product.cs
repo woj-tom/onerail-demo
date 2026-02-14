@@ -8,7 +8,7 @@ public class Product
     public decimal Price { get; }
     public int Amount { get; private set; }
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
     public Product(string name, string description, decimal price)
     {
@@ -26,5 +26,6 @@ public class Product
     public void IncreaseStock(int amount)
     {
         Amount += amount;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

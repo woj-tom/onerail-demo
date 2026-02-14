@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using ProductService.Domain.Repositories;
 using Shared.Contracts;
 using Shared.Contracts.Models;
@@ -7,18 +8,16 @@ namespace ProductService.Application.Handlers;
 
 public class ProductInventoryAddedHandler(
     IProductRepository productRepository,
-    IProcessedMessageRepository  processedMessageRepository)
+    IProcessedMessageRepository  processedMessageRepository,
+    ILogger<ProductInventoryAddedHandler> logger)
 {
     public async Task HandleAsync(ProductInventoryAddedEvent @event, CancellationToken ct)
     {
+        logger.LogInformation($"Handling product inventory added event");
         if (await processedMessageRepository.ExistsAsync(@event.EventId, ct)) return;
 
-        var entry = await productRepository.GetAsync(@event.ProductId, ct);
-        if (entry is null)
-        {
-            // ToDo: Do something smarter here
-            throw new Exception($"Product {@event.ProductId} does not exist");
-        }
+        var entry = await productRepository.GetAsync(@event.ProductId, ct)
+            ?? throw new NullReferenceException($"Product {@event.ProductId} does not exist");
         
         entry.IncreaseStock(@event.Quantity);
         
@@ -31,5 +30,6 @@ public class ProductInventoryAddedHandler(
         }, ct);
         
         await productRepository.SaveChangesAsync(ct);
+        logger.LogInformation($"Increased stock of product {@event.ProductId}");
     }
 }
