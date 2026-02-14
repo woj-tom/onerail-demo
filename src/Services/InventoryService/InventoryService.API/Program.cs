@@ -45,9 +45,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("Postgres")));
 
-builder.Services
-    .AddFluentValidationClientsideAdapters();
-
 builder.Services.AddScoped<IValidator<InventoryCreateReq>, InventoryCreateReqValidator>();
 
 var app = builder.Build();
