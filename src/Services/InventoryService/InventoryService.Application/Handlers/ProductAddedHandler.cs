@@ -17,7 +17,7 @@ public class ProductAddedHandler(
         var existing = await productRepository.GetAsync(@event.ProductId, ct);
         if (existing is not null) return;
 
-        await productRepository.CreateAsync(new RegisteredProduct(
+        await productRepository.InsertAsync(new RegisteredProduct(
             @event.ProductId,
             @event.ProductName), ct);
 

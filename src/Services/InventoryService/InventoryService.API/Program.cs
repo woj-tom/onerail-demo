@@ -4,10 +4,24 @@ using InventoryService.Infrastructure.Database;
 using InventoryService.Infrastructure.Database.Repositories;
 using InventoryService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Shared.Contracts.Repositories;
 using Shared.Utils;
+using Shared.Utils.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ToDo: This should be moved to a configuration file
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate:
+        "[{Timestamp:HH:mm:ss} {Level:u3}] " +
+        "[CorrelationId: {CorrelationId}] " +
+        "[TraceId: {TraceId}] " +
+        "{Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.Configure<RabbitMqOptions>(
     builder.Configuration.GetSection("RabbitMQ"));
@@ -27,6 +41,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("Postgres")));
 
 var app = builder.Build();
+
+app.UseMiddleware<StructuredLoggingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

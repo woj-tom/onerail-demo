@@ -6,7 +6,7 @@ namespace ProductService.Infrastructure.Database.Repositories;
 
 public class ProductRepository(AppDbContext db) : IProductRepository
 {
-    public async Task CreateAsync(Product product, CancellationToken ct)
+    public async Task InsertAsync(Product product, CancellationToken ct)
     {
         db.Products.Add(product);
         await db.SaveChangesAsync(ct);
