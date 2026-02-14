@@ -1,3 +1,8 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using InventoryService.API.Contracts;
+using InventoryService.API.Middlewares;
+using InventoryService.API.Validators;
 using InventoryService.Application.Handlers;
 using InventoryService.Domain.Repositories;
 using InventoryService.Infrastructure.Database;
@@ -40,9 +45,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("Postgres")));
 
+builder.Services
+    .AddFluentValidationClientsideAdapters();
+
+builder.Services.AddScoped<IValidator<InventoryCreateReq>, InventoryCreateReqValidator>();
+
 var app = builder.Build();
 
 app.UseMiddleware<StructuredLoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

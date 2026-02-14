@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.API.Contracts;
 using ProductService.Application.Handlers;
@@ -11,9 +12,13 @@ public class ProductController(
     ProductCreateHandler createHandler) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ProductCreateReq request, CancellationToken ct)
+    public async Task<IActionResult> Create(
+        [FromBody] ProductCreateReq request,
+        IValidator<ProductCreateReq> validator,
+        CancellationToken ct)
     {
-        // ToDo: Add validation
+        await validator.ValidateAndThrowAsync(request, ct);
+        
         await createHandler.HandleAsync(new ProductCreateCommand(
             request.Name,
             request.Description,

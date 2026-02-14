@@ -1,4 +1,10 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using ProductService.API;
+using ProductService.API.Contracts;
+using ProductService.API.Middlewares;
+using ProductService.API.Validators;
 using ProductService.Application.Handlers;
 using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Database;
@@ -40,9 +46,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("Postgres")));
 
+builder.Services
+    .AddFluentValidationClientsideAdapters();
+
+builder.Services.AddScoped<IValidator<ProductCreateReq>, ProductCreateReqValidator>();
+
+
 var app = builder.Build();
 
 app.UseMiddleware<StructuredLoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
