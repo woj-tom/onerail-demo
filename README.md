@@ -8,7 +8,7 @@ Run environment for a local development
 * RabbitMQ with admin panel on default ports
 
 ```bash
-docker compose -f ./deploy/docker/docker-compose.local.yml up -d --build
+docker compose -f ./deploy/docker/docker-compose.local.yml up -d
 ```
 
 Run a whole environment to test communication
@@ -22,11 +22,11 @@ docker compose -f ./deploy/docker/docker-compose.yml up -d --build
 ### Build Inventory Service
 
 ```bash
-docker build -t local/inventory-service -f src/Services/InventoryService/InventoryService.API/Dockerfile . 
+docker build -t one-rail/inventory-service -f src/Services/InventoryService/InventoryService.API/Dockerfile . 
 ```
 
 ### Build Product Service
 
 ```bash
-docker build -t local/product-service -f src/Services/ProductService/ProductService.API/Dockerfile . 
+docker build -t one-rail/product-service -f src/Services/ProductService/ProductService.API/Dockerfile . 
 ```
