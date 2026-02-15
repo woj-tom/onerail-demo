@@ -2,6 +2,7 @@
 
 POST {{HostAddress}}/product/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzJiZjczYy1kNDc0LTRiZWEtYmYyYS01YjkyZDZlOTQxODIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsicmVhZCIsIndyaXRlIl0sImV4cCI6NDkyNjgzOTA2NSwiaXNzIjoiRHVtbXkgaXNzdWVyIiwiYXVkIjoiTWlzY29uZmlndXJlZCJ9.rjlJfupV0X00NelBqFW9Sr9LtYd9GDSBGjY-9WXQmaM
 
 { "Name": "Product A", "Description": "...", "Price": 5.25 }
 
@@ -9,6 +10,7 @@ Content-Type: application/json
 
 POST {{HostAddress}}/product/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzJiZjczYy1kNDc0LTRiZWEtYmYyYS01YjkyZDZlOTQxODIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsicmVhZCIsIndyaXRlIl0sImV4cCI6NDkyNjgzOTA2NSwiaXNzIjoiRHVtbXkgaXNzdWVyIiwiYXVkIjoiTWlzY29uZmlndXJlZCJ9.rjlJfupV0X00NelBqFW9Sr9LtYd9GDSBGjY-9WXQmaM
 
 { "Name": "Product B", "Description": "...", "Price": 7.00 }
 
@@ -16,6 +18,7 @@ Content-Type: application/json
 
 POST {{HostAddress}}/product/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzJiZjczYy1kNDc0LTRiZWEtYmYyYS01YjkyZDZlOTQxODIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsicmVhZCIsIndyaXRlIl0sImV4cCI6NDkyNjgzOTA2NSwiaXNzIjoiRHVtbXkgaXNzdWVyIiwiYXVkIjoiTWlzY29uZmlndXJlZCJ9.rjlJfupV0X00NelBqFW9Sr9LtYd9GDSBGjY-9WXQmaM
 
 { "Name": "", "Description": "", "Price": 0 }
 

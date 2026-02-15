@@ -2,7 +2,8 @@
 
 POST {{HostAddress}}/inventory/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzJiZjczYy1kNDc0LTRiZWEtYmYyYS01YjkyZDZlOTQxODIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsicmVhZCIsIndyaXRlIl0sImV4cCI6NDkyNjgzOTA2NSwiaXNzIjoiRHVtbXkgaXNzdWVyIiwiYXVkIjoiTWlzY29uZmlndXJlZCJ9.rjlJfupV0X00NelBqFW9Sr9LtYd9GDSBGjY-9WXQmaM
 
-{ "ProductId" : "A3C682CC-2363-45D2-B455-B80C31E52CF5", "Quantity": 5 }
+{ "ProductId" : "7e59aba6-da55-4a20-abbb-80de7e7cd5ac", "Quantity": 5 }
 
 ###

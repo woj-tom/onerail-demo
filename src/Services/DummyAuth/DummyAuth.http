@@ -1,0 +1,6 @@
+@DummyAuth_HostAddress = http://localhost:5062
+
+GET {{DummyAuth_HostAddress}}/token/
+Accept: application/json
+
+###

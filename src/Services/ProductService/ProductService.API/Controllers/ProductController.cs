@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.API.Contracts;
 using ProductService.Application.Handlers;
@@ -12,6 +13,7 @@ public class ProductController(
     ProductCreateHandler createHandler) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = "write")]
     public async Task<IActionResult> Create(
         [FromBody] ProductCreateReq request,
         IValidator<ProductCreateReq> validator,
@@ -27,6 +29,7 @@ public class ProductController(
     }
 
     [HttpGet]
+    [Authorize(Roles = "read")]
     public async Task<IActionResult> List(CancellationToken ct)
     {
         var list = await listHandler.HandleAsync(ct);

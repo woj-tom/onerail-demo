@@ -13,7 +13,9 @@ public class InventoryCreateHandler(
     IPublishEndpoint publishEndpoint,
     ILogger<InventoryCreateHandler> logger)
 {
-    public async Task HandleAsync(InventoryCreateCommand command, CancellationToken ct)
+    public async Task HandleAsync(
+        InventoryCreateCommand command,
+        CancellationToken ct)
     {
         var exists = await productRepository.GetAsync(command.ProductId, ct) is not null;
         if (!exists)

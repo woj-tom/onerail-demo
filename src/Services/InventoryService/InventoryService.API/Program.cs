@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Shared.Contracts.Repositories;
 using Shared.Utils;
+using Shared.Utils.Extensions;
 using Shared.Utils.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,8 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.Configure<RabbitMqOptions>(
     builder.Configuration.GetSection("RabbitMQ"));

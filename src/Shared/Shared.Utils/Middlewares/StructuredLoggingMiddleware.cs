@@ -11,14 +11,14 @@ public class StructuredLoggingMiddleware(RequestDelegate next)
     
     public async Task Invoke(HttpContext context)
     {
-        var correlationId = context.Request.Headers[CorrelationHeader]
-            .FirstOrDefault();
+        var correlationId = context.Request.Headers[CorrelationHeader].FirstOrDefault();
 
         if (string.IsNullOrWhiteSpace(correlationId))
         {
             correlationId = context.TraceIdentifier;
         }
 
+        context.Items["correlation-id"] = correlationId;
         context.Response.Headers[CorrelationHeader] = correlationId;
         
         var stopwatch = Stopwatch.StartNew();
