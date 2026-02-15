@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using DummyAuth.Core;
 using InventoryService.Domain.Entities;
 using InventoryService.Infrastructure.Database;
 using MassTransit;
@@ -61,6 +62,9 @@ public sealed class InventoryIntegrationTests
             });
         
         _client = _factory.CreateClient();
+        _client.DefaultRequestHeaders.Add(
+            "Authorization",
+            [$"Bearer {TestAuthWrapper.GetToken()}"]);
     }
     
     [TestMethod]

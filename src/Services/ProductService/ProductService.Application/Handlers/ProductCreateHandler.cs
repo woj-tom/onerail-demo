@@ -11,7 +11,7 @@ public class ProductCreateHandler(
     IPublishEndpoint publishEndpoint,
     ILogger<ProductCreateHandler> logger)
 {
-    public async Task HandleAsync(ProductCreateCommand command, CancellationToken ct)
+    public async Task<ProductDto> HandleAsync(ProductCreateCommand command, CancellationToken ct)
     {
         var product = new Product(command.Name, command.Description, command.Price);
         logger.LogInformation($"New product {command.Name} created");
@@ -25,6 +25,13 @@ public class ProductCreateHandler(
             product.Name,
             DateTime.UtcNow), ct);
         logger.LogInformation($"Event {nameof(ProductAddedEvent)} published");
+
+        return new ProductDto(
+            product.Id,
+            product.Name,
+            product.Description,
+            product.Price,
+            product.Amount);
     }
 }
 

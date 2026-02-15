@@ -9,10 +9,19 @@
 
     <ItemGroup>
         <PackageReference Include="MSTest" Version="4.0.1"/>
+        <PackageReference Include="Testcontainers" Version="4.10.0" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.10.0" />
+        <PackageReference Include="Testcontainers.RabbitMq" Version="4.10.0" />
     </ItemGroup>
 
     <ItemGroup>
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Services\DummyAuth.Core\DummyAuth.Core.csproj" />
+      <ProjectReference Include="..\..\src\Services\InventoryService\InventoryService.API\InventoryService.API.csproj" />
+      <ProjectReference Include="..\..\src\Services\ProductService\ProductService.API\ProductService.API.csproj" />
     </ItemGroup>
 
 </Project>

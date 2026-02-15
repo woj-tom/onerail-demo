@@ -21,11 +21,11 @@ public class ProductController(
     {
         await validator.ValidateAndThrowAsync(request, ct);
         
-        await createHandler.HandleAsync(new ProductCreateCommand(
+        var dto = await createHandler.HandleAsync(new ProductCreateCommand(
             request.Name,
             request.Description,
             request.Price), ct);
-        return Created();
+        return StatusCode(201, dto);
     }
 
     [HttpGet]

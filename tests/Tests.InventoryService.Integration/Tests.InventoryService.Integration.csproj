@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Services\DummyAuth.Core\DummyAuth.Core.csproj" />
       <ProjectReference Include="..\..\src\Services\InventoryService\InventoryService.API\InventoryService.API.csproj" />
     </ItemGroup>
 
