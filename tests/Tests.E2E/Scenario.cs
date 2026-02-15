@@ -11,7 +11,7 @@ using Testcontainers.RabbitMq;
 namespace Tests.E2E;
 
 [TestClass]
-public sealed class InventoryIntegrationTests
+public sealed class E2EScenario
 {
     private static PostgreSqlContainer _postgresInventory;
     private static PostgreSqlContainer _postgresProduct;
@@ -88,8 +88,7 @@ public sealed class InventoryIntegrationTests
     }
     
     [TestMethod]
-    //                Who?             What?                    When?
-    public async Task InventoryService_WhenCallingPOSTInventory_ShouldSendEvent()
+    public async Task WholeScenario()
     {
         // Arrange
         var productResponse = await _client.PostAsJsonAsync(
