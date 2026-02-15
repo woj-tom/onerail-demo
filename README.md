@@ -46,7 +46,7 @@ Each service owns its own database.
 - Docker
 - Docker Compose
 - Testcontainers
-- xUnit
+- MsTest
 
 ## Local development
 
