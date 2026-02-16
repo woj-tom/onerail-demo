@@ -115,27 +115,50 @@ public sealed class E2EScenario
             new ProductCreateReq("Name", "Desc", 20.0m));
         productResponse.EnsureSuccessStatusCode();
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDto>();
-        // This is bad, but I am not sure how to wait for processing RabbitMQ event
-        Thread.Sleep(1000); 
         
         // Act
-        var inventoryResponse = await _client.PostAsJsonAsync(
-            "http://localhost:7500/inventory/",
-            new InventoryCreateReq(product!.Id, 20));
-        inventoryResponse.EnsureSuccessStatusCode();
-        // This is bad, but I am not sure how to wait for processing RabbitMQ event
-        Thread.Sleep(1000);
+        await WaitUntilAsync(async () =>
+        {
+            var inventoryResponse = await _client.PostAsJsonAsync(
+                "http://localhost:7500/inventory/",
+                new InventoryCreateReq(product!.Id, 20));
+            return inventoryResponse.IsSuccessStatusCode;
+        });
         
         // Assert
-        var listResponse = await _client.GetAsync(
-            "http://localhost:7600/product/");
-        listResponse.EnsureSuccessStatusCode();
-        var list = await listResponse.Content.ReadFromJsonAsync<List<ProductDto>>();
-        var item = list!.First(x => x.Id == product.Id);
-        Assert.IsNotNull(item);
-        Assert.AreEqual(20, item.Amount);
+        await WaitUntilAsync(async () =>
+        {
+            var response = await _client.GetAsync(
+                "http://localhost:7600/product/");
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var list = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
+            var item = list!.FirstOrDefault(x => x.Id == product!.Id);
+
+            return item?.Amount == 20;
+        });
     }
 
+    private static async Task WaitUntilAsync(
+        Func<Task<bool>> condition,
+        int timeoutMs = 10000,
+        int pollIntervalMs = 300)
+    {
+        var start = DateTime.UtcNow;
+
+        while (DateTime.UtcNow - start < TimeSpan.FromMilliseconds(timeoutMs))
+        {
+            if (await condition())
+                return;
+
+            await Task.Delay(pollIntervalMs);
+        }
+
+        throw new TimeoutException("Condition not met within timeout.");
+    }
+
+    
     [TestCleanup]
     public async Task CleanupAsync()
     {
