@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using InventoryService.API.Contracts;
 using InventoryService.API.Middlewares;
 using InventoryService.API.Validators;
@@ -10,6 +9,7 @@ using InventoryService.Infrastructure.Database.Repositories;
 using InventoryService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Shared.Contracts;
 using Shared.Contracts.Repositories;
 using Shared.Utils;
 using Shared.Utils.Extensions;
@@ -41,6 +41,7 @@ builder.Services.AddScoped<ProductAddedHandler>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
+builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 
 builder.Services.AddMessaging();
 

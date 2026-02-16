@@ -11,6 +11,7 @@ public class InventoryCreateHandler(
     IInventoryRepository  inventoryRepository,
     IProductRepository  productRepository,
     IPublishEndpoint publishEndpoint,
+    ITransactionManager context,
     ILogger<InventoryCreateHandler> logger)
 {
     public async Task HandleAsync(
@@ -21,19 +22,29 @@ public class InventoryCreateHandler(
         if (!exists)
             throw new ValidationException("Product does not exist");
         
-        var entry = new InventoryEntry(command.ProductId, command.Quantity, command.AddedBy);
-        logger.LogInformation($"New inventory entry {entry.Id} created");
-        
-        await inventoryRepository.InsertAsync(entry, ct);
-        logger.LogInformation($"Inventory entry {entry.Id} stored in database");
-        
-        await publishEndpoint.Publish(new ProductInventoryAddedEvent(
-            Guid.NewGuid(),
-            command.ProductId,
-            command.Quantity,
-            DateTime.UtcNow
-        ), ct);
-        logger.LogInformation($"Event {nameof(ProductInventoryAddedEvent)} published");
+        await using var transaction = await context.BeginTransactionAsync(ct);
+        try
+        {
+            var entry = new InventoryEntry(command.ProductId, command.Quantity, command.AddedBy);
+            logger.LogInformation($"New inventory entry {entry.Id} created");
+            inventoryRepository.Insert(entry, ct);
+
+            await publishEndpoint.Publish(new ProductInventoryAddedEvent(
+                Guid.NewGuid(),
+                command.ProductId,
+                command.Quantity,
+                DateTime.UtcNow
+            ), ct);
+            logger.LogInformation($"Event {nameof(ProductInventoryAddedEvent)} published");
+            
+            await transaction.CommitAsync(ct);
+            logger.LogInformation($"Inventory entry {entry.Id} stored in database");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(ct);
+            throw;
+        }
     }
 }
 

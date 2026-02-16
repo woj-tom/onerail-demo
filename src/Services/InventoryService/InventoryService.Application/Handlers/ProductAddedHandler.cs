@@ -10,6 +10,7 @@ namespace InventoryService.Application.Handlers;
 public class ProductAddedHandler(
     IProductRepository productRepository,
     IProcessedMessageRepository  processedMessageRepository,
+    ITransactionManager context,
     ILogger<ProductAddedHandler> logger)
 {
     public async Task HandleAsync(ProductAddedEvent @event, CancellationToken ct)
@@ -20,17 +21,27 @@ public class ProductAddedHandler(
         var existing = await productRepository.GetAsync(@event.ProductId, ct);
         if (existing is not null) return;
 
-        await productRepository.InsertAsync(new RegisteredProduct(
-            @event.ProductId,
-            @event.ProductName), ct);
-        logger.LogInformation($"Stored new registered product {@event.ProductId}");
-
-        await processedMessageRepository.CreateAsync(new ProcessedMessage
+        await using var transaction = await  context.BeginTransactionAsync(ct);
+        try
         {
-            MessageId = @event.EventId,
-            MessageType = @event.GetType().Name,
-            OccurredAt =  @event.OccurredAt,
-            ProcessedAt = DateTime.UtcNow
-        }, ct);
+            productRepository.Insert(new RegisteredProduct(
+                @event.ProductId,
+                @event.ProductName), ct);
+
+            await processedMessageRepository.CreateAsync(new ProcessedMessage
+            {
+                MessageId = @event.EventId,
+                MessageType = @event.GetType().Name,
+                OccurredAt = @event.OccurredAt,
+                ProcessedAt = DateTime.UtcNow
+            }, ct);
+            await transaction.CommitAsync(ct);
+            logger.LogInformation($"Stored new registered product {@event.ProductId}");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(ct);
+            throw;
+        }
     }
 }

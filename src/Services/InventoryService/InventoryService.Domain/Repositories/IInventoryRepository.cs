@@ -4,5 +4,5 @@ namespace InventoryService.Domain.Repositories;
 
 public interface IInventoryRepository
 {
-    Task InsertAsync(InventoryEntry entry, CancellationToken ct);
+    void Insert(InventoryEntry entry, CancellationToken ct);
 }

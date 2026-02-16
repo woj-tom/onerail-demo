@@ -5,10 +5,9 @@ namespace InventoryService.Infrastructure.Database.Repositories;
 
 public class ProductRepository(AppDbContext db) : IProductRepository
 {
-    public async Task InsertAsync(RegisteredProduct product, CancellationToken ct)
+    public async void Insert(RegisteredProduct product, CancellationToken ct)
     {
         db.RegisteredProducts.Add(product);
-        await db.SaveChangesAsync(ct);
     }
 
     public async Task<RegisteredProduct?> GetAsync(Guid id, CancellationToken ct)
