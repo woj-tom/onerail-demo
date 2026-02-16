@@ -32,6 +32,9 @@ public sealed class E2EScenario
             .WithPassword("postgres")
             .WithNetwork(network)
             .WithNetworkAliases("postgres-inventory")
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilInternalTcpPortIsAvailable(5432))
             .Build();
         
         _postgresProduct = new PostgreSqlBuilder("postgres:17.7")
@@ -40,6 +43,9 @@ public sealed class E2EScenario
             .WithPassword("postgres")
             .WithNetwork(network)
             .WithNetworkAliases("postgres-product")
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilInternalTcpPortIsAvailable(5432))
             .Build();
 
         _rabbitMq = new RabbitMqBuilder("rabbitmq:3-management")
@@ -47,6 +53,9 @@ public sealed class E2EScenario
             .WithNetworkAliases("rabbitmq")
             .WithUsername("user")
             .WithPassword("password")
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilInternalTcpPortIsAvailable(5672))
             .Build();
         
         _inventorySvc = new ContainerBuilder("one-rail/inventory-service")
@@ -58,6 +67,11 @@ public sealed class E2EScenario
             .WithEnvironment("RabbitMQ__Password", "password")
             .WithEnvironment("ASPNETCORE_ENVIRONMENT","Development")
             .WithNetwork(network)
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilHttpRequestIsSucceeded(request =>
+                        request.ForPort(80)
+                            .ForPath("/healthz")))
             .Build();
         
         _productSvc = new ContainerBuilder("one-rail/product-service")
@@ -69,6 +83,11 @@ public sealed class E2EScenario
             .WithEnvironment("RabbitMQ__Password", "password")
             .WithEnvironment("ASPNETCORE_ENVIRONMENT","Development")
             .WithNetwork(network)
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilHttpRequestIsSucceeded(request =>
+                        request.ForPort(80)
+                            .ForPath("/healthz")))
             .Build();
         
         await _postgresInventory.StartAsync();
@@ -96,12 +115,16 @@ public sealed class E2EScenario
             new ProductCreateReq("Name", "Desc", 20.0m));
         productResponse.EnsureSuccessStatusCode();
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDto>();
+        // This is bad, but I am not sure how to wait for processing RabbitMQ event
+        Thread.Sleep(1000); 
         
         // Act
         var inventoryResponse = await _client.PostAsJsonAsync(
             "http://localhost:7500/inventory/",
             new InventoryCreateReq(product!.Id, 20));
         inventoryResponse.EnsureSuccessStatusCode();
+        // This is bad, but I am not sure how to wait for processing RabbitMQ event
+        Thread.Sleep(1000);
         
         // Assert
         var listResponse = await _client.GetAsync(

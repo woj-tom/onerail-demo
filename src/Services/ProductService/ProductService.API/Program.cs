@@ -64,6 +64,7 @@ if (app.Environment.IsDevelopment())
     context.Database.Migrate();
 }
 
+app.MapHealthChecks("/healthz");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
