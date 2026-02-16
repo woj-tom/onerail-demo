@@ -5,9 +5,9 @@ namespace InventoryService.Infrastructure.Database.Repositories;
 
 public class InventoryRepository(AppDbContext db) : IInventoryRepository
 {
-    public void Insert(InventoryEntry entry, CancellationToken ct)
+    public async Task InsertAsync(InventoryEntry entry, CancellationToken ct)
     {
-        db.InventoryEntries.Add(entry);
+        await db.InventoryEntries.AddAsync(entry, ct);
     }
 
 }

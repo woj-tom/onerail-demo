@@ -24,17 +24,19 @@ public class ProductAddedHandler(
         await using var transaction = await  context.BeginTransactionAsync(ct);
         try
         {
-            productRepository.Insert(new RegisteredProduct(
+            await productRepository.InsertAsync(new RegisteredProduct(
                 @event.ProductId,
                 @event.ProductName), ct);
 
-            await processedMessageRepository.CreateAsync(new ProcessedMessage
+            await processedMessageRepository.InsertAsync(new ProcessedMessage
             {
                 MessageId = @event.EventId,
                 MessageType = @event.GetType().Name,
                 OccurredAt = @event.OccurredAt,
                 ProcessedAt = DateTime.UtcNow
             }, ct);
+            
+            await context.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
             logger.LogInformation($"Stored new registered product {@event.ProductId}");
         }

@@ -9,4 +9,9 @@ public class TransactionManager(AppDbContext db) : ITransactionManager
     {
         return db.Database.BeginTransactionAsync(cancellationToken);
     }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await db.SaveChangesAsync(cancellationToken);
+    }
 }

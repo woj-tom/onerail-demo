@@ -27,7 +27,7 @@ public class InventoryCreateHandler(
         {
             var entry = new InventoryEntry(command.ProductId, command.Quantity, command.AddedBy);
             logger.LogInformation($"New inventory entry {entry.Id} created");
-            inventoryRepository.Insert(entry, ct);
+            await inventoryRepository.InsertAsync(entry, ct);
 
             await publishEndpoint.Publish(new ProductInventoryAddedEvent(
                 Guid.NewGuid(),
@@ -36,7 +36,8 @@ public class InventoryCreateHandler(
                 DateTime.UtcNow
             ), ct);
             logger.LogInformation($"Event {nameof(ProductInventoryAddedEvent)} published");
-            
+
+            await context.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
             logger.LogInformation($"Inventory entry {entry.Id} stored in database");
         }

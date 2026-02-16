@@ -5,4 +5,6 @@ namespace Shared.Contracts;
 public interface ITransactionManager
 {
     Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken);
+    
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,7 +1,5 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using ProductService.API;
 using ProductService.API.Contracts;
 using ProductService.API.Middlewares;
 using ProductService.API.Validators;
@@ -11,6 +9,7 @@ using ProductService.Infrastructure.Database;
 using ProductService.Infrastructure.Database.Repositories;
 using ProductService.Infrastructure.Extensions;
 using Serilog;
+using Shared.Contracts;
 using Shared.Contracts.Repositories;
 using Shared.Utils;
 using Shared.Utils.Extensions;
@@ -42,6 +41,7 @@ builder.Services.AddScoped<ProductListHandler>();
 builder.Services.AddScoped<ProductInventoryAddedHandler>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProcessedMessageRepository, ProcessedMessageRepository>();
+builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 
 builder.Services.AddMessaging();
 

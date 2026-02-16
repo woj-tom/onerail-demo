@@ -9,6 +9,4 @@ public interface IProductRepository
     public Task<IEnumerable<Product>> ListAsync(CancellationToken ct);
 
     public Task<Product?> GetAsync(Guid id, CancellationToken ct);
-    
-    public Task SaveChangesAsync(CancellationToken ct);
 }
